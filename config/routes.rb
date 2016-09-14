@@ -1,8 +1,7 @@
 Rails.application.routes.draw do
   devise_for :admins
-  devise_for :users, controllers: {sessions: 'users/sessions'}
+  devise_for :users, controllers: {sessions: 'users/sessions',confirmations: 'confirmations'}
 
-  
   root 'users#index'
 
   # The priority is based upon order of creation: first created -> highest priority.
