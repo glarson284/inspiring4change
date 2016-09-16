@@ -5,9 +5,11 @@ Rails.application.routes.draw do
                                     registrations: 'users/registrations',
                                     confirmations: 'confirmations'}
 
-  
-  root 'home#index'
+  as :user do
+      patch '/users/confirmation' => 'confirmations#update', :via => :patch, :as => :update_user_confirmation
+  end
 
+  root 'home#index'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

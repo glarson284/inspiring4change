@@ -1,10 +1,17 @@
 class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, :registerable, :confirmable,
-         :recoverable, :rememberable, :trackable, :validatable
+  devise :database_authenticatable, :registerable, :validatable,
+         :confirmable, :recoverable, :rememberable, :trackable
+ 
+  def password_match?
+     self.errors[:password] << "can't be blank" if password.blank?
+     self.errors[:password_confirmation] << "can't be blank" if password_confirmation.blank?
+     self.errors[:password_confirmation] << "does not match password" if password != password_confirmation
+     password == password_confirmation && !password.blank?
+  end
 
-         # new function to set the password without knowing the current 
+  # new function to set the password without knowing the current 
   # password used in our confirmation controller. 
   def attempt_set_password(params)
     p = {}
@@ -23,4 +30,13 @@ class User < ActiveRecord::Base
   def only_if_unconfirmed
     pending_any_confirmation {yield}
   end
+
+  def password_required?
+  # Password is required if it is being set, but not for new records
+  if !persisted? 
+    false
+  else
+    !password.nil? || !password_confirmation.nil?
+  end
+end
 end
